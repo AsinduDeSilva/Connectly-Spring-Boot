@@ -16,7 +16,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
     @Column(nullable = false)
@@ -41,6 +41,12 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private Set<User> friends;
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private Set<FriendRequest> sentRequests;
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private Set<FriendRequest> receivedRequests;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private Set<Post> posts;
