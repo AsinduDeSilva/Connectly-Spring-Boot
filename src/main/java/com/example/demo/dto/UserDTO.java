@@ -14,7 +14,6 @@ import java.util.Set;
 @Data
 public class UserDTO {
 
-    @NotNull
     private Long userId;
 
     @NotNull
@@ -36,6 +35,5 @@ public class UserDTO {
     private Set<UserDTO> friends;
 
     private Set<PostDTO> posts;
-
 
 }
