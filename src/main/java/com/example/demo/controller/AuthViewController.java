@@ -11,4 +11,8 @@ public class AuthViewController {
         return "signup";
     }
 
+    @GetMapping("/signin")
+    public String showLoginPage() {
+        return "signin";
+    }
 }

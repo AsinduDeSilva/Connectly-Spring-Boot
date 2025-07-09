@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Connectly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f9fafb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+        }
+
+        .container {
+            max-width: 28rem;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 0;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-content {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: 0.25rem;
+        }
+
+        .button {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .button:hover {
+            background-color: #2563eb;
+        }
+
+        .button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .footer-text a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-text a:hover {
+            color: #2563eb;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Connectly</h1>
+            <p>Join our community today</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Create Account</h2>
+                <p class="card-description">Enter your information to get started</p>
+            </div>
+            <div class="card-content">
+                <form id="signupForm" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="label">First Name</label>
+                            <input type="text" id="firstName" name="firstName" class="input" placeholder="John" required>
+                            <div id="firstNameError" class="error-message" style="display: none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="label">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" class="input" placeholder="Doe" required>
+                            <div id="lastNameError" class="error-message" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="label">Email Address</label>
+                        <input type="email" id="email" name="email" class="input" placeholder="john.doe@example.com" required>
+                        <div id="emailError" class="error-message" style="display: none;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="label">Password</label>
+                        <input type="password" id="password" name="password" class="input" placeholder="Create a strong password" required>
+                        <div id="passwordError" class="error-message" style="display: none;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateOfBirth" class="label">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" class="input" required>
+                        <div id="dateOfBirthError" class="error-message" style="display: none;"></div>
+                    </div>
+
+                    <button type="submit" class="button" id="submitButton">
+                        Create Account
+                    </button>
+
+                    <div class="footer-text">
+                        Already have an account?
+                        <a href="/signin">Sign in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signupForm');
+
+            function validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function validatePassword(password) {
+                return password.length >= 8;
+            }
+
+            function validateName(name) {
+                return name.trim().length >= 2;
+            }
+
+            function validateAge(dateOfBirth) {
+                const today = new Date();
+                const birthDate = new Date(dateOfBirth);
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                return age >= 13;
+            }
+
+            function showError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                const errorDiv = document.getElementById(fieldId + 'Error');
+
+                field.classList.add('error');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+
+            function clearError(fieldId) {
+                const field = document.getElementById(fieldId);
+                const errorDiv = document.getElementById(fieldId + 'Error');
+
+                field.classList.remove('error');
+                errorDiv.style.display = 'none';
+            }
+
+            function clearAllErrors() {
+                const fields = ['firstName', 'lastName', 'email', 'password', 'dateOfBirth'];
+                fields.forEach(clearError);
+            }
+
+            document.getElementById('firstName').addEventListener('blur', function() {
+                if (!validateName(this.value)) {
+                    showError('firstName', 'First name must be at least 2 characters long');
+                } else {
+                    clearError('firstName');
+                }
+            });
+
+            document.getElementById('lastName').addEventListener('blur', function() {
+                if (!validateName(this.value)) {
+                    showError('lastName', 'Last name must be at least 2 characters long');
+                } else {
+                    clearError('lastName');
+                }
+            });
+
+            document.getElementById('email').addEventListener('blur', function() {
+                if (!validateEmail(this.value)) {
+                    showError('email', 'Please enter a valid email address');
+                } else {
+                    clearError('email');
+                }
+            });
+
+            document.getElementById('password').addEventListener('blur', function() {
+                if (!validatePassword(this.value)) {
+                    showError('password', 'Password must be at least 8 characters long');
+                } else {
+                    clearError('password');
+                }
+            });
+
+            document.getElementById('dateOfBirth').addEventListener('blur', function() {
+                if (!this.value) {
+                    showError('dateOfBirth', 'Please enter your date of birth');
+                } else if (!validateAge(this.value)) {
+                    showError('dateOfBirth', 'You must be at least 13 years old to sign up');
+                } else {
+                    clearError('dateOfBirth');
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                clearAllErrors();
+                let isValid = true;
+
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const dateOfBirth = document.getElementById('dateOfBirth').value;
+
+                if (!validateName(firstName)) {
+                    showError('firstName', 'First name must be at least 2 characters long');
+                    isValid = false;
+                }
+
+                if (!validateName(lastName)) {
+                    showError('lastName', 'Last name must be at least 2 characters long');
+                    isValid = false;
+                }
+
+                if (!validateEmail(email)) {
+                    showError('email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+
+                if (!validatePassword(password)) {
+                    showError('password', 'Password must be at least 8 characters long');
+                    isValid = false;
+                }
+
+                if (!dateOfBirth) {
+                    showError('dateOfBirth', 'Please enter your date of birth');
+                    isValid = false;
+                } else if (!validateAge(dateOfBirth)) {
+                    showError('dateOfBirth', 'You must be at least 13 years old to sign up');
+                    isValid = false;
+                }
+
+                if (!isValid) return;
+
+                fetch('api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        password: password,
+                        dateOfBirth: dateOfBirth
+                    })
+                })
+                .then(response => response.json())
+                .then(json => {
+                    if (json.success) {
+                        alert("Signup successful! Redirecting to login page...");
+                        window.location.href= '/signin';
+                    } else {
+                        alert(json.message);
+                    }
+                })
+            });
+        });
+    </script>
+</body>
+</html>
