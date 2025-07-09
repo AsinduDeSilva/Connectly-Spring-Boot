@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.CRUDResponseDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +22,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.createUser(userDTO));
+    public ResponseEntity<CRUDResponseDTO<UserDTO>> createUser(@RequestBody UserDTO userDTO) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new CRUDResponseDTO<>(true, "User created successfully", userService.createUser(userDTO)));
     }
 
     @GetMapping

@@ -317,7 +317,7 @@
             }
 
             if (isValid) {
-                fetch("api/auth/signin", {
+                fetch("/api/auth/signin", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -328,7 +328,7 @@
                 .then(json => {
                     if (json.success) {
                         localStorage.setItem("userId", json.data.id)
-                        window.location.href = '/';
+                        window.location.href = '/home';
                     } else {
                         generalError.style.display = 'block';
                         generalError.textContent = json.message;

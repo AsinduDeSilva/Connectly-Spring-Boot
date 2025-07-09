@@ -6,6 +6,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,15 +17,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
-        return modelMapper.map(userRepository.save(modelMapper.map(userDTO, User.class)),UserDTO.class);
+        User newUser = modelMapper.map(userDTO, User.class);
+        newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        return modelMapper.map(userRepository.save(newUser), UserDTO.class);
     }
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(

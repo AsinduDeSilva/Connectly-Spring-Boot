@@ -24,9 +24,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDTO signin(AuthRequestDTO authRequestDTO) {
 
-        User user = userRepository
-                .findByEmailAndPassword(authRequestDTO.getEmail(), passwordEncoder.encode(authRequestDTO.getPassword()))
+        User user = userRepository.findByEmail(authRequestDTO.getEmail())
                 .orElseThrow(() -> new UserNotFoundException(authRequestDTO.getEmail()));
+
+        if (!passwordEncoder.matches(authRequestDTO.getPassword(), user.getPassword())) {
+            throw new UserNotFoundException("Invalid credentials for user: " + authRequestDTO.getEmail());
+        }
 
         return new AuthResponseDTO(user.getUserId());
     }
