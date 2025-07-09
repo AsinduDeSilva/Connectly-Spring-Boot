@@ -1,16 +1,14 @@
 package com.example.demo.dto;
 
-import com.example.demo.model.User;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
+@Data
+public class PostWithAuthorNameDTO {
     @NotNull
     private long postId;
 
@@ -23,5 +21,5 @@ public class PostDTO {
     @NotNull
     private LocalDateTime createdAt;
 
-//    private User author;
+    private String authorName;
 }
