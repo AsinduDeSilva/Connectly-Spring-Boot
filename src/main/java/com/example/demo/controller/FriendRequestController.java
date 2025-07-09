@@ -22,6 +22,9 @@ public class FriendRequestController {
         return ResponseEntity.ok("Friend request sent successfully");
     }
 
-
-
+    @PostMapping("/accept")
+    public ResponseEntity<String> acceptFriendRequest(@RequestBody FriendRequestDTO requestDTO) {
+        friendRequestService.acceptFriendRequest(requestDTO.getSenderId(), requestDTO.getReceiverId());
+        return ResponseEntity.ok("Friend request accepted successfully");
+    }
 }
