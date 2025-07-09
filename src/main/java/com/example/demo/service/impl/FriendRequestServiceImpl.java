@@ -5,6 +5,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.FriendRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FriendRequestService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
 
     @Override
-    public void sendFriendRequest(Long senderId, Long receiverId) {
+    public ResponseEntity<String> sendFriendRequest(Long senderId, Long receiverId) {
         if(senderId == null || receiverId == null) {
             throw new IllegalArgumentException("Sender and receiver IDs must not be null");
         }
@@ -47,6 +48,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         friendRequest.setSentAt(LocalDateTime.now());
         friendRequestRepository.save(friendRequest);
         System.out.println("Friend request sent from " + sender.getEmail() + " to " + receiver.getEmail());
-        
+
+        return ResponseEntity.ok("Friend request sent from " + sender.getEmail() + " to " + receiver.getEmail());
     }
 }
