@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Sign In - Connectly</title>
+
     <style>
         * {
             margin: 0;
@@ -108,12 +109,6 @@
             border-color: #ef4444;
         }
 
-        .error-message {
-            font-size: 0.75rem;
-            color: #ef4444;
-            margin-top: 0.25rem;
-        }
-
         .forgot-password a {
             font-size: 0.875rem;
             color: #3b82f6;
@@ -205,24 +200,24 @@
             <p class="card-description">Enter your credentials to access your account</p>
         </div>
         <div class="card-content">
-            <div id="generalError" class="general-error" style="display: none;">
-                Invalid email or password. Please try again.
+            <div th:if="${param.error}" class="general-error">
+                Invalid username or password. Please try again.
             </div>
 
-            <form id="loginForm" class="form">
+            <form th:action="@{/perform_login}" method="post" class="form">
                 <div class="form-group">
-                    <label for="email" class="label">Email Address</label>
-                    <input type="email" id="email" name="email" class="input" placeholder="john.doe@example.com" required>
-                    <div id="emailError" class="error-message" style="display: none;"></div>
+                    <label for="username" class="label">Email Address</label>
+                    <input type="text" id="username" name="username" class="input"
+                           placeholder="john.doe@example.com" required/>
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="label">Password</label>
-                    <input type="password" id="password" name="password" class="input" placeholder="Enter your password" required>
-                    <div id="passwordError" class="error-message" style="display: none;"></div>
+                    <input type="password" id="password" name="password" class="input"
+                           placeholder="Enter your password" required/>
                 </div>
 
-                <button type="submit" class="button" id="submitButton">
+                <button type="submit" class="button">
                     Sign In
                 </button>
 
@@ -234,137 +229,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('loginForm');
-        const generalError = document.getElementById('generalError');
-
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        function validatePassword(password) {
-            return password.length >= 6;
-        }
-
-        function showError(fieldId, message) {
-            const field = document.getElementById(fieldId);
-            const errorDiv = document.getElementById(fieldId + 'Error');
-
-            field.classList.add('error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-
-        function clearError(fieldId) {
-            const field = document.getElementById(fieldId);
-            const errorDiv = document.getElementById(fieldId + 'Error');
-
-            field.classList.remove('error');
-            errorDiv.style.display = 'none';
-        }
-
-        function clearAllErrors() {
-            const fields = ['email', 'password'];
-            fields.forEach(clearError);
-            generalError.style.display = 'none';
-        }
-
-        function hideMessages() {
-            generalError.style.display = 'none';
-        }
-
-        document.getElementById('email').addEventListener('blur', function() {
-            hideMessages();
-            if (!validateEmail(this.value)) {
-                showError('email', 'Please enter a valid email address');
-            } else {
-                clearError('email');
-            }
-        });
-
-        document.getElementById('password').addEventListener('blur', function() {
-            hideMessages();
-            if (!validatePassword(this.value)) {
-                showError('password', 'Password must be at least 6 characters long');
-            } else {
-                clearError('password');
-            }
-        });
-
-        document.getElementById('email').addEventListener('input', hideMessages);
-        document.getElementById('password').addEventListener('input', hideMessages);
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            clearAllErrors();
-            let isValid = true;
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            if (!validateEmail(email)) {
-                showError('email', 'Please enter a valid email address');
-                isValid = false;
-            }
-
-            if (!validatePassword(password)) {
-                showError('password', 'Password must be at least 6 characters long');
-                isValid = false;
-            }
-
-            if (isValid) {
-                fetch("/api/auth/signin", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                })
-                .then(res => res.json())
-                .then(json => {
-                    if (json.success) {
-                        localStorage.setItem("userId", json.data.id)
-                        window.location.href = '/home';
-                    } else {
-                        generalError.style.display = 'block';
-                        generalError.textContent = json.message;
-                    }
-                })
-            }
-        });
-
-
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-
-        emailInput.addEventListener('focus', function() {
-            if (!this.value) {
-                this.placeholder = 'Try: demo@connectly.com';
-            }
-        });
-
-        passwordInput.addEventListener('focus', function() {
-            if (!this.value) {
-                this.placeholder = 'Try: password123';
-            }
-        });
-
-        emailInput.addEventListener('blur', function() {
-            if (!this.value) {
-                this.placeholder = 'john.doe@example.com';
-            }
-        });
-
-        passwordInput.addEventListener('blur', function() {
-            if (!this.value) {
-                this.placeholder = 'Enter your password';
-            }
-        });
-    });
-</script>
 </body>
 </html>
