@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.FriendRequestDTO;
-import com.example.demo.model.FriendRequest;
 import com.example.demo.service.FriendRequestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,5 +25,11 @@ public class FriendRequestController {
     public ResponseEntity<String> acceptFriendRequest(@RequestBody FriendRequestDTO requestDTO) {
         friendRequestService.acceptFriendRequest(requestDTO.getSenderId(), requestDTO.getReceiverId());
         return ResponseEntity.ok("Friend request accepted successfully");
+    }
+
+    @PostMapping("/decline")
+    public ResponseEntity<String> declineFriendRequest(@RequestBody FriendRequestDTO requestDTO) {
+        friendRequestService.declineFriendRequest(requestDTO.getSenderId(), requestDTO.getReceiverId());
+        return ResponseEntity.ok("Friend request declined successfully");
     }
 }

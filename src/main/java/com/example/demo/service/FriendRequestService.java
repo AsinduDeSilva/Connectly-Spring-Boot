@@ -6,4 +6,6 @@ public interface FriendRequestService {
     void sendFriendRequest(Long senderId, Long receiverId);
 
     void acceptFriendRequest(@NotNull Long senderId, @NotNull Long receiverId);
+
+    void declineFriendRequest(@NotNull Long senderId, @NotNull Long receiverId);
 }
