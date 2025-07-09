@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class PostDTO {
-    @NotNull
+
     private long postId;
 
     @NotNull
