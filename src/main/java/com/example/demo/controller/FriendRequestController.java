@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.FriendRequestDTO;
+import com.example.demo.model.FriendRequest;
 import com.example.demo.service.FriendRequestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

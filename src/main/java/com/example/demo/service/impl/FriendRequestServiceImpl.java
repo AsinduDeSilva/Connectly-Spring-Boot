@@ -24,7 +24,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
 
     @Override
-    public ResponseEntity<String> sendFriendRequest(Long senderId, Long receiverId) {
+    public void sendFriendRequest(Long senderId, Long receiverId) {
         if(senderId == null || receiverId == null) {
             throw new IllegalArgumentException("Sender and receiver IDs must not be null");
         }
@@ -47,8 +47,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         friendRequest.setReceiver(receiver);
         friendRequest.setSentAt(LocalDateTime.now());
         friendRequestRepository.save(friendRequest);
-        System.out.println("Friend request sent from " + sender.getEmail() + " to " + receiver.getEmail());
 
-        return ResponseEntity.ok("Friend request sent from " + sender.getEmail() + " to " + receiver.getEmail());
+
     }
 }
