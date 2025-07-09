@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
 
-import com.example.demo.model.User;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,11 +14,9 @@ import java.time.LocalDateTime;
 public class FriendRequestDTO {
 
     @NotNull
-    User sender;
+    private Long senderId;
 
     @NotNull
-    User receiver;
+    private Long receiverId;
 
-    @NotNull
-    LocalDateTime sentAt;
 }
