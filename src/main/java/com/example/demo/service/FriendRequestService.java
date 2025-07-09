@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import org.springframework.http.ResponseEntity;
+
 public interface FriendRequestService {
-    void sendFriendRequest(Long senderId, Long receiverId);
+    ResponseEntity<String> sendFriendRequest(Long senderId, Long receiverId);
 }
