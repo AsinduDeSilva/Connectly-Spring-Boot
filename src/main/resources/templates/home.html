@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Home - Connectly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f9fafb;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .add-post-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .add-post-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .logout-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* Navigation */
+        .nav-container {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .nav-tabs {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+            display: flex;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .nav-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #6b7280;
+        }
+
+        .nav-tab.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .nav-tab:not(.active):hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-message {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .welcome-message h1 {
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-message p {
+            color: #6b7280;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Feed */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .post {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.15s ease-in-out;
+        }
+
+        .post:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: #111827;
+            font-size: 0.875rem;
+        }
+
+        .post-timestamp {
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
+        .post-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+
+        .post-content {
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* Users Section */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: box-shadow 0.15s ease-in-out;
+        }
+
+        .user-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .friend-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+            border: none;
+            min-width: 120px;
+        }
+
+        .friend-btn.send-request {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .friend-btn.send-request:hover {
+            background-color: #2563eb;
+        }
+
+        .friend-btn.pending {
+            background-color: #f59e0b;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .friend-btn.friends {
+            background-color: #10b981;
+            color: white;
+            cursor: default;
+        }
+
+        .friend-btn {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .friend-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* Friend Requests */
+        .requests-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .requests-section {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .requests-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .request-card {
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .request-avatar {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .request-info {
+            flex: 1;
+        }
+
+        .request-name {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .request-time {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .accept-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .accept-btn:hover {
+            background-color: #059669;
+        }
+
+        .decline-btn, .cancel-request-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .decline-btn:hover, .cancel-request-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 0.5rem;
+            width: 100%;
+            max-width: 32rem;
+            margin: 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.5rem 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out;
+        }
+
+        .close-btn:hover {
+            color: #374151;
+        }
+
+        .modal-content {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .input, .textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .input:focus, .textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .textarea {
+            resize: vertical;
+            min-height: 6rem;
+        }
+
+        .modal-footer {
+            padding: 0 1.5rem 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-primary:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .empty-state h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .header-actions {
+                gap: 0.5rem;
+            }
+
+            .nav-container {
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 0 1rem;
+            }
+
+            .post {
+                padding: 1rem;
+            }
+
+            .modal {
+                margin: 0.5rem;
+            }
+
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .request-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .request-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="header-content">
+        <div class="logo">Connectly</div>
+        <div class="header-actions">
+            <button class="add-post-btn" id="addPostBtn">+ Add Post</button>
+            <form th:action="@{/perform_logout}" method="post">
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </form>
+
+        </div>
+    </div>
+</header>
+
+<!-- Navigation -->
+<div class="nav-container">
+    <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="feed">
+            <span class="nav-icon">📰</span>
+            <span>Feed</span>
+        </button>
+        <button class="nav-tab" data-tab="users">
+            <span class="nav-icon">👥</span>
+            <span>Users</span>
+        </button>
+        <button class="nav-tab" data-tab="requests">
+            <span class="nav-icon">👋</span>
+            <span>Friend Requests</span>
+        </button>
+    </div>
+</div>
+
+<main class="main">
+    <div class="welcome-message">
+        <h1>Welcome to Connectly</h1>
+        <p>Share your thoughts and connect with others</p>
+    </div>
+
+    <!-- Feed Section -->
+    <div class="content-section active" id="feed-section">
+        <div class="feed" id="feed">
+            <article class="post">
+                <div class="post-header">
+                    <div class="post-author">Sarah Johnson</div>
+                    <div class="post-timestamp">2 hours ago</div>
+                </div>
+                <h2 class="post-title">Welcome to the community!</h2>
+                <div class="post-content">
+                    I'm excited to be part of this amazing community. Looking forward to connecting with like-minded people and sharing interesting discussions. What brings you all here?
+                </div>
+            </article>
+
+            <article class="post">
+                <div class="post-header">
+                    <div class="post-author">Mike Chen</div>
+                    <div class="post-timestamp">4 hours ago</div>
+                </div>
+                <h2 class="post-title">Tips for remote work productivity</h2>
+                <div class="post-content">
+                    After working remotely for 3 years, here are my top tips: 1) Create a dedicated workspace, 2) Set clear boundaries between work and personal time, 3) Take regular breaks, 4) Stay connected with your team. What works for you?
+                </div>
+            </article>
+
+            <article class="post">
+                <div class="post-header">
+                    <div class="post-author">Emma Davis</div>
+                    <div class="post-timestamp">6 hours ago</div>
+                </div>
+                <h2 class="post-title">Book recommendation: "Atomic Habits"</h2>
+                <div class="post-content">
+                    Just finished reading "Atomic Habits" by James Clear and it's absolutely fantastic! The book provides practical strategies for building good habits and breaking bad ones. Highly recommend it to anyone looking to improve their daily routines.
+                </div>
+            </article>
+
+            <article class="post">
+                <div class="post-header">
+                    <div class="post-author">Alex Rodriguez</div>
+                    <div class="post-timestamp">8 hours ago</div>
+                </div>
+                <h2 class="post-title">Weekend hiking adventure</h2>
+                <div class="post-content">
+                    Spent the weekend hiking in the mountains and it was absolutely breathtaking! There's something magical about disconnecting from technology and reconnecting with nature. The views from the summit were worth every step of the challenging climb.
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- Users Section -->
+    <div class="content-section" id="users-section">
+        <div class="users-grid">
+            <div class="user-card" th:each="user : ${users}" th:data-user-id="${user.userId}">
+                <div class="user-avatar" th:text="${user.firstName.substring(0,1) + user.lastName.substring(0,1)}"></div>
+                <div class="user-name" th:text="${user.firstName + ' ' + user.lastName}"></div>
+
+                <button th:if="${user.isFriend}"
+                        class="friend-btn friends"
+                        data-action="friends">✓ Friends</button>
+
+                <button style="cursor: default" th:if="${user.hasSentFriendRequest}"
+                        class="friend-btn pending"
+                        data-action="pending">Request Sent</button>
+
+                <button style="cursor: default" th:if="${user.hasReceivedFriendRequest}"
+                        class="friend-btn respond"
+                        data-action="respond">Respond to Request</button>
+
+                <button th:if="${!user.isFriend && !user.hasSentFriendRequest && !user.hasReceivedFriendRequest}"
+                        class="friend-btn send-request"
+                        data-action="send-request">Send Request</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section" id="requests-section">
+        <div class="requests-container">
+            <div class="requests-section">
+                <h3>
+                    <span>📥</span>
+                    Incoming Requests
+                </h3>
+                <div class="requests-list" id="incoming-requests">
+                    <div class="request-card">
+                        <div class="request-avatar">MJ</div>
+                        <div class="request-info">
+                            <div class="request-name">Maria Johnson</div>
+                            <div class="request-time">2 hours ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="accept-btn">Accept</button>
+                            <button class="decline-btn">Decline</button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-avatar">RB</div>
+                        <div class="request-info">
+                            <div class="request-name">Robert Brown</div>
+                            <div class="request-time">5 hours ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="accept-btn">Accept</button>
+                            <button class="decline-btn">Decline</button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-avatar">SD</div>
+                        <div class="request-info">
+                            <div class="request-name">Sophie Davis</div>
+                            <div class="request-time">1 day ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="accept-btn">Accept</button>
+                            <button class="decline-btn">Decline</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="requests-section">
+                <h3>
+                    <span>📤</span>
+                    Outgoing Requests
+                </h3>
+                <div class="requests-list" id="outgoing-requests">
+                    <div class="request-card">
+                        <div class="request-avatar">JW</div>
+                        <div class="request-info">
+                            <div class="request-name">James Wilson</div>
+                            <div class="request-time">1 hour ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="cancel-request-btn">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-avatar">NP</div>
+                        <div class="request-info">
+                            <div class="request-name">Nina Patel</div>
+                            <div class="request-time">3 hours ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="cancel-request-btn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title">Create New Post</h2>
+            <button class="close-btn" id="closeBtn">&times;</button>
+        </div>
+        <div class="modal-content">
+            <form id="postForm">
+                <div class="form-group">
+                    <label for="postTitle" class="label">Title</label>
+                    <input type="text" id="postTitle" name="title" class="input" placeholder="What's on your mind?" required>
+                </div>
+                <div class="form-group">
+                    <label for="postContent" class="label">Content</label>
+                    <textarea id="postContent" name="content" class="textarea" placeholder="Share your thoughts..." required></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+            <button type="submit" form="postForm" class="btn btn-primary" id="submitBtn">Post</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addPostBtn = document.getElementById('addPostBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeBtn = document.getElementById('closeBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const postForm = document.getElementById('postForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const feed = document.getElementById('feed');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        // Navigation functionality
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetTab = this.getAttribute('data-tab');
+
+                // Update active tab
+                navTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Show corresponding content section
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(targetTab + '-section').classList.add('active');
+
+                // Hide add post button for non-feed sections
+                if (targetTab === 'feed') {
+                    addPostBtn.style.display = 'block';
+                } else {
+                    addPostBtn.style.display = 'none';
+                }
+            });
+        });
+
+        // Handle incoming friend request actions
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('accept-btn')) {
+                const requestCard = e.target.closest('.request-card');
+                const name = requestCard.querySelector('.request-name').textContent;
+                requestCard.style.opacity = '0';
+                setTimeout(() => {
+                    requestCard.remove();
+                    showNotification(`You are now friends with ${name}!`);
+                }, 300);
+            }
+
+            if (e.target.classList.contains('decline-btn')) {
+                const requestCard = e.target.closest('.request-card');
+                requestCard.style.opacity = '0';
+                setTimeout(() => {
+                    requestCard.remove();
+                    showNotification('Friend request declined');
+                }, 300);
+            }
+        });
+
+        // Handle outgoing friend request cancellation
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('cancel-request-btn')) {
+                const requestCard = e.target.closest('.request-card');
+                const name = requestCard.querySelector('.request-name').textContent;
+                requestCard.style.opacity = '0';
+                setTimeout(() => {
+                    requestCard.remove();
+                    showNotification(`Friend request to ${name} cancelled`);
+
+                    // Update user card button back to "Send Request"
+                    const userCards = document.querySelectorAll('.user-card');
+                    userCards.forEach(card => {
+                        const userName = card.querySelector('.user-name').textContent;
+                        if (userName === name) {
+                            const btn = card.querySelector('.friend-btn');
+                            btn.textContent = 'Send Request';
+                            btn.className = 'friend-btn send-request';
+                            btn.setAttribute('data-action', 'send-request');
+                        }
+                    });
+                }, 300);
+            }
+        });
+
+        // Modal functions
+        function openModal() {
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('postTitle').focus();
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            postForm.reset();
+        }
+
+        // Format timestamp
+        function formatTimestamp(date) {
+            const now = new Date();
+            const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+            if (diffInMinutes < 1) return 'Just now';
+            if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+
+            const diffInDays = Math.floor(diffInHours / 24);
+            if (diffInDays < 7) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+
+            return date.toLocaleDateString();
+        }
+
+        // Create post element
+        function createPostElement(author, title, content, timestamp) {
+            const article = document.createElement('article');
+            article.className = 'post';
+            article.style.opacity = '0';
+            article.style.transform = 'translateY(-20px)';
+
+            article.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-author">${author}</div>
+                        <div class="post-timestamp">${formatTimestamp(timestamp)}</div>
+                    </div>
+                    <h2 class="post-title">${title}</h2>
+                    <div class="post-content">${content}</div>
+                `;
+
+            return article;
+        }
+
+        // Add new post to feed
+        function addPostToFeed(title, content) {
+            const timestamp = new Date();
+            const postElement = createPostElement(currentUser, title, content, timestamp);
+
+            // Insert at the beginning of the feed
+            feed.insertBefore(postElement, feed.firstChild);
+
+            // Animate in
+            setTimeout(() => {
+                postElement.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+                postElement.style.opacity = '1';
+                postElement.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        // Event listeners
+        addPostBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Close modal when clicking outside
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // Form submission
+        postForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+
+            if (!title || !content) {
+                alert('Please fill in both title and content');
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Posting...';
+
+            // Simulate API call delay
+            setTimeout(() => {
+                addPostToFeed(title, content);
+                closeModal();
+
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Post';
+
+                // Show success message
+                showNotification('Post created successfully!');
+            }, 1000);
+        });
+
+        // Simple notification system
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #10b981;
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    z-index: 1001;
+                    opacity: 0;
+                    transform: translateX(100%);
+                    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+                `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        const textarea = document.getElementById('postContent');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('friend-btn') && e.target.getAttribute('data-action') === 'send-request') {
+                const userCard = e.target.closest('.user-card');
+                const userName = userCard.querySelector('.user-name').textContent;
+
+                const userId = userCard.getAttribute('data-user-id')
+
+                e.target.disabled = true;
+                e.target.textContent = 'Sending...';
+
+                fetch('/api/friend-request/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        receiverId: userId
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            e.target.textContent = 'Request Sent';
+                            e.target.className = 'friend-btn pending';
+                            e.target.setAttribute('data-action', 'pending');
+                            showNotification(`Friend request sent to ${userName}!`);
+
+                        } else {
+                            throw new Error(data.message || 'Failed to send request');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification(error.message || 'Failed to send friend request');
+
+                        // Reset button if failed
+                        e.target.textContent = 'Send Request';
+                        e.target.disabled = false;
+                    });
+            }
+        });
+
+
+
+    });
+</script>
+</body>
+</html>

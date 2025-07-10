@@ -1,7 +1,5 @@
 package com.example.demo.dto;
 
-
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class FriendRequestDTO {
-
-    @NotNull
-    private Long receiverId;
-
+public class AuthRequestDTO {
+    private String email;
+    private String password;
 }
