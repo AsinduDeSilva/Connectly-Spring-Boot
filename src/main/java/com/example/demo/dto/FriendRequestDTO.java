@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 public class FriendRequestDTO {
 
     @NotNull
-    private Long senderId;
-
-    @NotNull
     private Long receiverId;
 
 }

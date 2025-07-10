@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.CRUDResponseDTO;
+import com.example.demo.dto.DetailedUserDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    @GetMapping("/list/{userId}")
-    public ResponseEntity<List<UserDTO>> getUsersList(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.getUsersList(userId));
+    @GetMapping("/list")
+    public ResponseEntity<List<DetailedUserDTO>> getUsersList() {
+        return ResponseEntity.ok(userService.getUsersList());
     }
 }
