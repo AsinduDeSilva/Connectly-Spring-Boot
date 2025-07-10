@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Home - Connectly</title>
-    <script>
-        //if(!localStorage.getItem("userId")) window.location.href = 'signin'
-    </script>
     <style>
         * {
             margin: 0;
@@ -45,6 +43,12 @@
             color: #111827;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
         .add-post-btn {
             background-color: #3b82f6;
             color: white;
@@ -59,6 +63,22 @@
 
         .add-post-btn:hover {
             background-color: #2563eb;
+        }
+
+        .logout-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .logout-btn:hover {
+            background-color: #dc2626;
         }
 
         /* Navigation */
@@ -195,7 +215,7 @@
         /* Users Section */
         .users-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
         }
 
@@ -229,36 +249,75 @@
         .user-name {
             font-weight: 600;
             color: #111827;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-bio {
-            color: #6b7280;
-            font-size: 0.875rem;
             margin-bottom: 1rem;
+            font-size: 1rem;
         }
 
-        .connect-btn {
-            background-color: #3b82f6;
-            color: white;
-            border: none;
+        .friend-btn {
             padding: 0.5rem 1rem;
             border-radius: 0.375rem;
             font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
             transition: background-color 0.15s ease-in-out;
+            border: none;
+            min-width: 120px;
         }
 
-        .connect-btn:hover {
+        .friend-btn.send-request {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .friend-btn.send-request:hover {
             background-color: #2563eb;
         }
 
-        .connect-btn {
-            background-color: #6b7280;
+        .friend-btn.pending {
+            background-color: #f59e0b;
+            color: white;
             cursor: not-allowed;
         }
 
+        .friend-btn.friends {
+            background-color: #10b981;
+            color: white;
+            cursor: default;
+        }
+
+        .friend-btn {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .friend-btn:hover {
+            background-color: #dc2626;
+        }
+
         /* Friend Requests */
+        .requests-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .requests-section {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .requests-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .requests-list {
             display: flex;
             flex-direction: column;
@@ -266,13 +325,13 @@
         }
 
         .request-card {
-            background: white;
+            background: #f9fafb;
             border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 1rem;
             display: flex;
             align-items: center;
             gap: 1rem;
+            border: 1px solid #e5e7eb;
         }
 
         .request-avatar {
@@ -323,7 +382,7 @@
             background-color: #059669;
         }
 
-        .decline-btn {
+        .decline-btn, .cancel-request-btn {
             background-color: #ef4444;
             color: white;
             border: none;
@@ -334,7 +393,7 @@
             transition: background-color 0.15s ease-in-out;
         }
 
-        .decline-btn:hover {
+        .decline-btn:hover, .cancel-request-btn:hover {
             background-color: #dc2626;
         }
 
@@ -481,7 +540,6 @@
             background-color: #e5e7eb;
         }
 
-        /* Empty State */
         .empty-state h3 {
             font-size: 1.125rem;
             margin-bottom: 0.5rem;
@@ -492,6 +550,10 @@
         @media (max-width: 768px) {
             .header-content {
                 padding: 0 1rem;
+            }
+
+            .header-actions {
+                gap: 0.5rem;
             }
 
             .nav-container {
@@ -531,7 +593,13 @@
 <header class="header">
     <div class="header-content">
         <div class="logo">Connectly</div>
-        <button class="add-post-btn" id="addPostBtn">+ Add Post</button>
+        <div class="header-actions">
+            <button class="add-post-btn" id="addPostBtn">+ Add Post</button>
+            <form th:action="@{/perform_logout}" method="post">
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </form>
+
+        </div>
     </div>
 </header>
 
@@ -553,9 +621,7 @@
     </div>
 </div>
 
-<!-- Main Content -->
 <main class="main">
-    <!-- Welcome Message -->
     <div class="welcome-message">
         <h1>Welcome to Connectly</h1>
         <p>Share your thoughts and connect with others</p>
@@ -564,7 +630,6 @@
     <!-- Feed Section -->
     <div class="content-section active" id="feed-section">
         <div class="feed" id="feed">
-            <!-- Sample Posts -->
             <article class="post">
                 <div class="post-header">
                     <div class="post-author">Sarah Johnson</div>
@@ -614,86 +679,102 @@
     <!-- Users Section -->
     <div class="content-section" id="users-section">
         <div class="users-grid">
-            <div class="user-card">
-                <div class="user-avatar">JD</div>
-                <div class="user-name">John Doe</div>
-                <div class="user-bio">Software developer passionate about creating amazing user experiences</div>
-                <button class="connect-btn">Connect</button>
-            </div>
+            <div class="user-card" th:each="user : ${users}" th:data-user-id="${user.userId}">
+                <div class="user-avatar" th:text="${user.firstName.substring(0,1) + user.lastName.substring(0,1)}"></div>
+                <div class="user-name" th:text="${user.firstName + ' ' + user.lastName}"></div>
 
-            <div class="user-card">
-                <div class="user-avatar">AS</div>
-                <div class="user-name">Alice Smith</div>
-                <div class="user-bio">Digital marketing specialist and content creator</div>
-                <button class="connect-btn">Connect</button>
-            </div>
+                <button th:if="${user.isFriend}"
+                        class="friend-btn friends"
+                        data-action="friends">✓ Friends</button>
 
-            <div class="user-card">
-                <div class="user-avatar">BW</div>
-                <div class="user-name">Bob Wilson</div>
-                <div class="user-bio">Entrepreneur and startup enthusiast</div>
-                <button class="connect-btn">Connect</button>
-            </div>
+                <button style="cursor: default" th:if="${user.hasSentFriendRequest}"
+                        class="friend-btn pending"
+                        data-action="pending">Request Sent</button>
 
-            <div class="user-card">
-                <div class="user-avatar">LG</div>
-                <div class="user-name">Lisa Garcia</div>
-                <div class="user-bio">UX designer with a love for minimalist design</div>
-                <button class="connect-btn">Connect</button>
-            </div>
+                <button style="cursor: default" th:if="${user.hasReceivedFriendRequest}"
+                        class="friend-btn respond"
+                        data-action="respond">Respond to Request</button>
 
-            <div class="user-card">
-                <div class="user-avatar">TM</div>
-                <div class="user-name">Tom Miller</div>
-                <div class="user-bio">Data scientist exploring the world of AI and machine learning</div>
-                <button class="connect-btn">Connect</button>
-            </div>
-
-            <div class="user-card">
-                <div class="user-avatar">KL</div>
-                <div class="user-name">Kate Lee</div>
-                <div class="user-bio">Photographer capturing life's beautiful moments</div>
-                <button class="connect-btn">Connect</button>
+                <button th:if="${!user.isFriend && !user.hasSentFriendRequest && !user.hasReceivedFriendRequest}"
+                        class="friend-btn send-request"
+                        data-action="send-request">Send Request</button>
             </div>
         </div>
     </div>
 
-    <!-- Friend Requests Section -->
     <div class="content-section" id="requests-section">
-        <div class="requests-list">
-            <div class="request-card">
-                <div class="request-avatar">MJ</div>
-                <div class="request-info">
-                    <div class="request-name">Maria Johnson</div>
-                    <div class="request-time">2 hours ago</div>
-                </div>
-                <div class="request-actions">
-                    <button class="accept-btn">Accept</button>
-                    <button class="decline-btn">Decline</button>
+        <div class="requests-container">
+            <div class="requests-section">
+                <h3>
+                    <span>📥</span>
+                    Incoming Requests
+                </h3>
+                <div class="requests-list" id="incoming-requests">
+                    <div class="request-card">
+                        <div class="request-avatar">MJ</div>
+                        <div class="request-info">
+                            <div class="request-name">Maria Johnson</div>
+                            <div class="request-time">2 hours ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="accept-btn">Accept</button>
+                            <button class="decline-btn">Decline</button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-avatar">RB</div>
+                        <div class="request-info">
+                            <div class="request-name">Robert Brown</div>
+                            <div class="request-time">5 hours ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="accept-btn">Accept</button>
+                            <button class="decline-btn">Decline</button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-avatar">SD</div>
+                        <div class="request-info">
+                            <div class="request-name">Sophie Davis</div>
+                            <div class="request-time">1 day ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="accept-btn">Accept</button>
+                            <button class="decline-btn">Decline</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="request-card">
-                <div class="request-avatar">RB</div>
-                <div class="request-info">
-                    <div class="request-name">Robert Brown</div>
-                    <div class="request-time">5 hours ago</div>
-                </div>
-                <div class="request-actions">
-                    <button class="accept-btn">Accept</button>
-                    <button class="decline-btn">Decline</button>
-                </div>
-            </div>
+            <div class="requests-section">
+                <h3>
+                    <span>📤</span>
+                    Outgoing Requests
+                </h3>
+                <div class="requests-list" id="outgoing-requests">
+                    <div class="request-card">
+                        <div class="request-avatar">JW</div>
+                        <div class="request-info">
+                            <div class="request-name">James Wilson</div>
+                            <div class="request-time">1 hour ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="cancel-request-btn">Cancel</button>
+                        </div>
+                    </div>
 
-            <div class="request-card">
-                <div class="request-avatar">SD</div>
-                <div class="request-info">
-                    <div class="request-name">Sophie Davis</div>
-                    <div class="request-time">1 day ago</div>
-                </div>
-                <div class="request-actions">
-                    <button class="accept-btn">Accept</button>
-                    <button class="decline-btn">Decline</button>
+                    <div class="request-card">
+                        <div class="request-avatar">NP</div>
+                        <div class="request-info">
+                            <div class="request-name">Nina Patel</div>
+                            <div class="request-time">3 hours ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="cancel-request-btn">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -738,20 +819,22 @@
         const navTabs = document.querySelectorAll('.nav-tab');
         const contentSections = document.querySelectorAll('.content-section');
 
-        const currentUser = 'You';
-
+        // Navigation functionality
         navTabs.forEach(tab => {
             tab.addEventListener('click', function() {
                 const targetTab = this.getAttribute('data-tab');
 
+                // Update active tab
                 navTabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
 
+                // Show corresponding content section
                 contentSections.forEach(section => {
                     section.classList.remove('active');
                 });
                 document.getElementById(targetTab + '-section').classList.add('active');
 
+                // Hide add post button for non-feed sections
                 if (targetTab === 'feed') {
                     addPostBtn.style.display = 'block';
                 } else {
@@ -760,14 +843,7 @@
             });
         });
 
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('connect-btn') && !e.target.classList.contains('pending')) {
-                e.target.textContent = 'Pending';
-                e.target.classList.add('pending');
-                showNotification('Connection request sent!');
-            }
-        });
-
+        // Handle incoming friend request actions
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('accept-btn')) {
                 const requestCard = e.target.closest('.request-card');
@@ -775,7 +851,7 @@
                 requestCard.style.opacity = '0';
                 setTimeout(() => {
                     requestCard.remove();
-                    showNotification(`You are now connected with ${name}!`);
+                    showNotification(`You are now friends with ${name}!`);
                 }, 300);
             }
 
@@ -789,6 +865,32 @@
             }
         });
 
+        // Handle outgoing friend request cancellation
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('cancel-request-btn')) {
+                const requestCard = e.target.closest('.request-card');
+                const name = requestCard.querySelector('.request-name').textContent;
+                requestCard.style.opacity = '0';
+                setTimeout(() => {
+                    requestCard.remove();
+                    showNotification(`Friend request to ${name} cancelled`);
+
+                    // Update user card button back to "Send Request"
+                    const userCards = document.querySelectorAll('.user-card');
+                    userCards.forEach(card => {
+                        const userName = card.querySelector('.user-name').textContent;
+                        if (userName === name) {
+                            const btn = card.querySelector('.friend-btn');
+                            btn.textContent = 'Send Request';
+                            btn.className = 'friend-btn send-request';
+                            btn.setAttribute('data-action', 'send-request');
+                        }
+                    });
+                }, 300);
+            }
+        });
+
+        // Modal functions
         function openModal() {
             modalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -801,6 +903,7 @@
             postForm.reset();
         }
 
+        // Format timestamp
         function formatTimestamp(date) {
             const now = new Date();
             const diffInMinutes = Math.floor((now - date) / (1000 * 60));
@@ -817,6 +920,7 @@
             return date.toLocaleDateString();
         }
 
+        // Create post element
         function createPostElement(author, title, content, timestamp) {
             const article = document.createElement('article');
             article.className = 'post';
@@ -835,12 +939,15 @@
             return article;
         }
 
+        // Add new post to feed
         function addPostToFeed(title, content) {
             const timestamp = new Date();
             const postElement = createPostElement(currentUser, title, content, timestamp);
 
+            // Insert at the beginning of the feed
             feed.insertBefore(postElement, feed.firstChild);
 
+            // Animate in
             setTimeout(() => {
                 postElement.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
                 postElement.style.opacity = '1';
@@ -848,22 +955,26 @@
             }, 10);
         }
 
+        // Event listeners
         addPostBtn.addEventListener('click', openModal);
         closeBtn.addEventListener('click', closeModal);
         cancelBtn.addEventListener('click', closeModal);
 
+        // Close modal when clicking outside
         modalOverlay.addEventListener('click', function(e) {
             if (e.target === modalOverlay) {
                 closeModal();
             }
         });
 
+        // Close modal with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                 closeModal();
             }
         });
 
+        // Form submission
         postForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -875,20 +986,25 @@
                 return;
             }
 
+            // Disable submit button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Posting...';
 
+            // Simulate API call delay
             setTimeout(() => {
                 addPostToFeed(title, content);
                 closeModal();
 
+                // Reset button
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Post';
 
+                // Show success message
                 showNotification('Post created successfully!');
             }, 1000);
         });
 
+        // Simple notification system
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.style.cssText = `
@@ -928,6 +1044,51 @@
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('friend-btn') && e.target.getAttribute('data-action') === 'send-request') {
+                const userCard = e.target.closest('.user-card');
+                const userName = userCard.querySelector('.user-name').textContent;
+
+                const userId = userCard.getAttribute('data-user-id')
+
+                e.target.disabled = true;
+                e.target.textContent = 'Sending...';
+
+                fetch('/api/friend-request/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        receiverId: userId
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            e.target.textContent = 'Request Sent';
+                            e.target.className = 'friend-btn pending';
+                            e.target.setAttribute('data-action', 'pending');
+                            showNotification(`Friend request sent to ${userName}!`);
+
+                        } else {
+                            throw new Error(data.message || 'Failed to send request');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification(error.message || 'Failed to send friend request');
+
+                        // Reset button if failed
+                        e.target.textContent = 'Send Request';
+                        e.target.disabled = false;
+                    });
+            }
+        });
+
+
+
     });
 </script>
 </body>

@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,11 +27,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/signin").permitAll()
                         .requestMatchers("/signup").permitAll()
-                        .requestMatchers("/api/auth/signin").permitAll()
-                        .requestMatchers("/api/**").hasRole("USER")
+                        .requestMatchers("/api/users/list/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(httpBasic -> {});
+                .formLogin(form -> form
+                        .loginPage("/signin")
+                        .loginProcessingUrl("/perform_login")
+                        .defaultSuccessUrl("/home")
+                        .failureForwardUrl("/signin")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/perform_logout")
+                        .logoutSuccessUrl("/signin")
+                );
 
         return http.build();
     }

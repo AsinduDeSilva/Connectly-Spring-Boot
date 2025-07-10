@@ -6,6 +6,8 @@ import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +26,20 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDTO signin(AuthRequestDTO authRequestDTO) {
 
-        User user = userRepository
-                .findByEmailAndPassword(authRequestDTO.getEmail(), passwordEncoder.encode(authRequestDTO.getPassword()))
+        User user = userRepository.findByEmail(authRequestDTO.getEmail())
                 .orElseThrow(() -> new UserNotFoundException(authRequestDTO.getEmail()));
 
+        if (!passwordEncoder.matches(authRequestDTO.getPassword(), user.getPassword())) {
+            throw new UserNotFoundException("Invalid credentials for user: " + authRequestDTO.getEmail());
+        }
+
         return new AuthResponseDTO(user.getUserId());
+    }
+
+    @Override
+    public User getLoggedUser() {
+        UserDetails userdetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByEmail(userdetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + userdetails.getUsername()));
     }
 }
