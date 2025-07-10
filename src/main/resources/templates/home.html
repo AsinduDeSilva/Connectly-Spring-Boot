@@ -173,6 +173,7 @@
             background: white;
             border-radius: 0.5rem;
             padding: 1.5rem;
+            margin-bottom: 1rem ;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.15s ease-in-out;
         }
@@ -629,49 +630,14 @@
 
     <!-- Feed Section -->
     <div class="content-section active" id="feed-section">
-        <div class="feed" id="feed">
+        <div class="feed" id="feed" th:each="post :${posts}">
             <article class="post">
                 <div class="post-header">
-                    <div class="post-author">Sarah Johnson</div>
-                    <div class="post-timestamp">2 hours ago</div>
+                    <div class="post-author" th:text="${post.authorName}"></div>
+                    <div class="post-timestamp" th:text="${post.timeAgo}"></div>
                 </div>
-                <h2 class="post-title">Welcome to the community!</h2>
-                <div class="post-content">
-                    I'm excited to be part of this amazing community. Looking forward to connecting with like-minded people and sharing interesting discussions. What brings you all here?
-                </div>
-            </article>
-
-            <article class="post">
-                <div class="post-header">
-                    <div class="post-author">Mike Chen</div>
-                    <div class="post-timestamp">4 hours ago</div>
-                </div>
-                <h2 class="post-title">Tips for remote work productivity</h2>
-                <div class="post-content">
-                    After working remotely for 3 years, here are my top tips: 1) Create a dedicated workspace, 2) Set clear boundaries between work and personal time, 3) Take regular breaks, 4) Stay connected with your team. What works for you?
-                </div>
-            </article>
-
-            <article class="post">
-                <div class="post-header">
-                    <div class="post-author">Emma Davis</div>
-                    <div class="post-timestamp">6 hours ago</div>
-                </div>
-                <h2 class="post-title">Book recommendation: "Atomic Habits"</h2>
-                <div class="post-content">
-                    Just finished reading "Atomic Habits" by James Clear and it's absolutely fantastic! The book provides practical strategies for building good habits and breaking bad ones. Highly recommend it to anyone looking to improve their daily routines.
-                </div>
-            </article>
-
-            <article class="post">
-                <div class="post-header">
-                    <div class="post-author">Alex Rodriguez</div>
-                    <div class="post-timestamp">8 hours ago</div>
-                </div>
-                <h2 class="post-title">Weekend hiking adventure</h2>
-                <div class="post-content">
-                    Spent the weekend hiking in the mountains and it was absolutely breathtaking! There's something magical about disconnecting from technology and reconnecting with nature. The views from the summit were worth every step of the challenging climb.
-                </div>
+                <h2 class="post-title" th:text="${post.title}"></h2>
+                <div class="post-content" th:text="${post.content}"></div>
             </article>
         </div>
     </div>
@@ -815,7 +781,6 @@
         const cancelBtn = document.getElementById('cancelBtn');
         const postForm = document.getElementById('postForm');
         const submitBtn = document.getElementById('submitBtn');
-        const feed = document.getElementById('feed');
         const navTabs = document.querySelectorAll('.nav-tab');
         const contentSections = document.querySelectorAll('.content-section');
 
@@ -901,58 +866,6 @@
             modalOverlay.classList.remove('active');
             document.body.style.overflow = '';
             postForm.reset();
-        }
-
-        // Format timestamp
-        function formatTimestamp(date) {
-            const now = new Date();
-            const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-
-            if (diffInMinutes < 1) return 'Just now';
-            if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
-
-            const diffInHours = Math.floor(diffInMinutes / 60);
-            if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
-
-            const diffInDays = Math.floor(diffInHours / 24);
-            if (diffInDays < 7) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-
-            return date.toLocaleDateString();
-        }
-
-        // Create post element
-        function createPostElement(author, title, content, timestamp) {
-            const article = document.createElement('article');
-            article.className = 'post';
-            article.style.opacity = '0';
-            article.style.transform = 'translateY(-20px)';
-
-            article.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-author">${author}</div>
-                        <div class="post-timestamp">${formatTimestamp(timestamp)}</div>
-                    </div>
-                    <h2 class="post-title">${title}</h2>
-                    <div class="post-content">${content}</div>
-                `;
-
-            return article;
-        }
-
-        // Add new post to feed
-        function addPostToFeed(title, content) {
-            const timestamp = new Date();
-            const postElement = createPostElement(currentUser, title, content, timestamp);
-
-            // Insert at the beginning of the feed
-            feed.insertBefore(postElement, feed.firstChild);
-
-            // Animate in
-            setTimeout(() => {
-                postElement.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
-                postElement.style.opacity = '1';
-                postElement.style.transform = 'translateY(0)';
-            }, 10);
         }
 
         // Event listeners
@@ -1093,9 +1006,6 @@
                     });
             }
         });
-
-
-
     });
 </script>
 </body>

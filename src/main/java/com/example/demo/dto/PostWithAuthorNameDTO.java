@@ -22,4 +22,6 @@ public class PostWithAuthorNameDTO {
     private LocalDateTime createdAt;
 
     private String authorName;
+
+    private String timeAgo;
 }
