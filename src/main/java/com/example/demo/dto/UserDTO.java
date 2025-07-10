@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.Post;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
