@@ -1,15 +1,17 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.PostDTO;
 import com.example.demo.dto.PostWithAuthorIdDTO;
 import com.example.demo.dto.PostWithAuthorNameDTO;
 import com.example.demo.model.Post;
 import com.example.demo.repository.PostRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.service.AuthService;
 import com.example.demo.service.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,21 +20,22 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, UserRepository userRepository) {
+    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, AuthService authService) {
         this.postRepository = postRepository;
         this.modelMapper = modelMapper;
-        this.userRepository = userRepository;
+        this.authService = authService;
     }
 
     @Override
-    public PostWithAuthorIdDTO createPost(PostWithAuthorIdDTO postWithAuthorIdDTO){
-        Post post = modelMapper.map(postWithAuthorIdDTO, Post.class);
-        post.setAuthor(userRepository.findById(postWithAuthorIdDTO.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found")));
+    public PostDTO createPost(PostDTO postDTO){
+        Post post = modelMapper.map(postDTO, Post.class);
+        post.setAuthor(authService.getLoggedUser());
+        post.setCreatedAt(LocalDateTime.now());
         postRepository.save(post);
-        return postWithAuthorIdDTO;
+        return modelMapper.map(post, PostDTO.class);
     }
 
     public PostWithAuthorIdDTO getPostByID(Long id){

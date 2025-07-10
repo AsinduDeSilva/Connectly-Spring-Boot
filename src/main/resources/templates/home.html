@@ -990,18 +990,25 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Posting...';
 
-            // Simulate API call delay
-            setTimeout(() => {
-                addPostToFeed(title, content);
-                closeModal();
-
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Post';
-
-                // Show success message
-                showNotification('Post created successfully!');
-            }, 1000);
+            fetch("api/posts", {
+                method:"POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    content: content
+                })
+            })
+                .then(response => response.json())
+                .then(json => {
+                    if (json.success) {
+                        alert("Post created successfully");
+                        window.location.reload();
+                    } else {
+                        alert(json.message);
+                    }
+                })
         });
 
         // Simple notification system
