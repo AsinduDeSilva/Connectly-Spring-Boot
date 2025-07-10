@@ -1,14 +1,15 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.CRUDResponseDTO;
 import com.example.demo.dto.PostDTO;
 import com.example.demo.dto.PostWithAuthorIdDTO;
 import com.example.demo.dto.PostWithAuthorNameDTO;
 import com.example.demo.service.PostService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("api/posts")
@@ -21,8 +22,10 @@ public class PostController {
     }
 
     @PostMapping
-    public PostWithAuthorIdDTO createPost(@RequestBody PostWithAuthorIdDTO postWithAuthorIdDTO){
-        return postService.createPost(postWithAuthorIdDTO);
+    public ResponseEntity<CRUDResponseDTO<PostDTO>> createPost(@RequestBody PostDTO postDTO){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new CRUDResponseDTO<>(true, "Post Created",  postService.createPost(postDTO)));
     }
 
     @GetMapping("/{id}")

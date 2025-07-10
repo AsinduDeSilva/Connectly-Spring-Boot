@@ -1,10 +1,8 @@
 package com.example.demo.dto;
 
-import com.example.demo.model.User;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,8 +18,8 @@ public class PostDTO {
     @NotNull
     private String content;
 
-    @NotNull
-    private LocalDateTime createdAt;
+//    @NotNull
+//    private LocalDateTime createdAt;
 
 //    private User author;
 }
