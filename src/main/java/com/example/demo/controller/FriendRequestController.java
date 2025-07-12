@@ -23,14 +23,20 @@ public class FriendRequestController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<String> acceptFriendRequest(@RequestBody FriendRequestDTO requestDTO) {
-        friendRequestService.acceptFriendRequest(requestDTO.getReceiverId());
-        return ResponseEntity.ok("Friend request accepted successfully");
+    public ResponseEntity<CRUDResponseDTO<Void>> acceptFriendRequest(@RequestBody FriendRequestDTO requestDTO) {
+        friendRequestService.acceptFriendRequest(requestDTO.getId());
+        return ResponseEntity.ok(new CRUDResponseDTO<>(true, "Friend request accepted successfully", null));
     }
 
     @PostMapping("/decline")
     public ResponseEntity<String> declineFriendRequest(@RequestBody FriendRequestDTO requestDTO) {
-        friendRequestService.declineFriendRequest(requestDTO.getReceiverId());
+        friendRequestService.declineFriendRequest(requestDTO.getId());
         return ResponseEntity.ok("Friend request declined successfully");
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<CRUDResponseDTO<Void>> cancelFriendRequest(@RequestBody FriendRequestDTO requestDTO) {
+        friendRequestService.cancelFriendRequest(requestDTO.getId());
+        return ResponseEntity.ok(new CRUDResponseDTO<>(true, "Friend request cancelled successfully", null));
     }
 }

@@ -675,40 +675,18 @@
                     <span>📥</span>
                     Incoming Requests
                 </h3>
-                <div class="requests-list" id="incoming-requests">
-                    <div class="request-card">
-                        <div class="request-avatar">MJ</div>
+                <div class="requests-list" id="incoming-requests" th:each="incomingRequest : ${incomingRequests}">
+                    <div class="request-card" th:data-id="${incomingRequest.id}">
+                        <div class="request-avatar" th:text="${incomingRequest.sender.firstName.substring(0,1)
+                        + incomingRequest.sender.lastName.substring(0,1)}"></div>
                         <div class="request-info">
-                            <div class="request-name">Maria Johnson</div>
-                            <div class="request-time">2 hours ago</div>
+                            <div class="request-name" th:text="${incomingRequest.sender.firstName
+                            + incomingRequest.sender.lastName}"></div>
+                            <div class="request-time" th:text="${incomingRequest.timeAgo}"></div>
                         </div>
                         <div class="request-actions">
-                            <button class="accept-btn">Accept</button>
-                            <button class="decline-btn">Decline</button>
-                        </div>
-                    </div>
-
-                    <div class="request-card">
-                        <div class="request-avatar">RB</div>
-                        <div class="request-info">
-                            <div class="request-name">Robert Brown</div>
-                            <div class="request-time">5 hours ago</div>
-                        </div>
-                        <div class="request-actions">
-                            <button class="accept-btn">Accept</button>
-                            <button class="decline-btn">Decline</button>
-                        </div>
-                    </div>
-
-                    <div class="request-card">
-                        <div class="request-avatar">SD</div>
-                        <div class="request-info">
-                            <div class="request-name">Sophie Davis</div>
-                            <div class="request-time">1 day ago</div>
-                        </div>
-                        <div class="request-actions">
-                            <button class="accept-btn">Accept</button>
-                            <button class="decline-btn">Decline</button>
+                            <button class="accept-btn" id="acceptBtn">Accept</button>
+                            <button class="decline-btn" id="declineBtn">Decline</button>
                         </div>
                     </div>
                 </div>
@@ -719,23 +697,14 @@
                     <span>📤</span>
                     Outgoing Requests
                 </h3>
-                <div class="requests-list" id="outgoing-requests">
-                    <div class="request-card">
-                        <div class="request-avatar">JW</div>
+                <div class="requests-list" id="outgoing-requests" th:each="outgoingRequest : ${outgoingRequests}">
+                    <div class="request-card" th:data-id="${outgoingRequest.id}">
+                        <div class="request-avatar" th:text="${outgoingRequest.receiver.firstName.substring(0,1)
+                        + outgoingRequest.receiver.lastName.substring(0,1)}"></div>
                         <div class="request-info">
-                            <div class="request-name">James Wilson</div>
-                            <div class="request-time">1 hour ago</div>
-                        </div>
-                        <div class="request-actions">
-                            <button class="cancel-request-btn">Cancel</button>
-                        </div>
-                    </div>
-
-                    <div class="request-card">
-                        <div class="request-avatar">NP</div>
-                        <div class="request-info">
-                            <div class="request-name">Nina Patel</div>
-                            <div class="request-time">3 hours ago</div>
+                            <div class="request-name" th:text="${outgoingRequest.receiver.firstName
+                            + outgoingRequest.receiver.lastName}"></div>
+                            <div class="request-time" th:text="${outgoingRequest.timeAgo}"></div>
                         </div>
                         <div class="request-actions">
                             <button class="cancel-request-btn">Cancel</button>
@@ -814,19 +783,53 @@
                 const requestCard = e.target.closest('.request-card');
                 const name = requestCard.querySelector('.request-name').textContent;
                 requestCard.style.opacity = '0';
-                setTimeout(() => {
-                    requestCard.remove();
-                    showNotification(`You are now friends with ${name}!`);
-                }, 300);
+
+                fetch("api/friend-request/accept",{
+                    method: "POST",
+                    headers:{
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: requestCard.getAttribute('data-id')
+                    })
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) {
+                            window.location.reload();
+                        } else {
+                            alert(json.message);
+                        }
+                    })
+
+                requestCard.remove();
+                showNotification(`You are now friends with ${name}!`);
             }
 
             if (e.target.classList.contains('decline-btn')) {
                 const requestCard = e.target.closest('.request-card');
                 requestCard.style.opacity = '0';
-                setTimeout(() => {
-                    requestCard.remove();
-                    showNotification('Friend request declined');
-                }, 300);
+
+                fetch("api/friend-request/decline",{
+                    method: "POST",
+                    headers:{
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: requestCard.getAttribute('data-id')
+                    })
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) {
+                            window.location.reload();
+                        } else {
+                            alert(json.message);
+                        }
+                    })
+
+                requestCard.remove();
+                showNotification('Friend request declined');
             }
         });
 
@@ -836,22 +839,39 @@
                 const requestCard = e.target.closest('.request-card');
                 const name = requestCard.querySelector('.request-name').textContent;
                 requestCard.style.opacity = '0';
-                setTimeout(() => {
-                    requestCard.remove();
-                    showNotification(`Friend request to ${name} cancelled`);
 
-                    // Update user card button back to "Send Request"
-                    const userCards = document.querySelectorAll('.user-card');
-                    userCards.forEach(card => {
-                        const userName = card.querySelector('.user-name').textContent;
-                        if (userName === name) {
-                            const btn = card.querySelector('.friend-btn');
-                            btn.textContent = 'Send Request';
-                            btn.className = 'friend-btn send-request';
-                            btn.setAttribute('data-action', 'send-request');
+                fetch("api/friend-request/decline",{
+                    method: "POST",
+                    headers:{
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: requestCard.getAttribute('data-id')
+                    })
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) {
+                            window.location.reload();
+                        } else {
+                            alert(json.message);
                         }
-                    });
-                }, 300);
+                    })
+
+                requestCard.remove();
+                showNotification(`Friend request to ${name} cancelled`);
+
+                // Update user card button back to "Send Request"
+                const userCards = document.querySelectorAll('.user-card');
+                userCards.forEach(card => {
+                    const userName = card.querySelector('.user-name').textContent;
+                    if (userName === name) {
+                        const btn = card.querySelector('.friend-btn');
+                        btn.textContent = 'Send Request';
+                        btn.className = 'friend-btn send-request';
+                        btn.setAttribute('data-action', 'send-request');
+                    }
+                });
             }
         });
 

@@ -7,11 +7,11 @@ import com.example.demo.model.Post;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.PostService;
+import com.example.demo.util.TimeUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +22,14 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
     private final AuthService authService;
+    private final TimeUtils timeUtils;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, AuthService authService) {
+    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, AuthService authService, TimeUtils timeUtils) {
         this.postRepository = postRepository;
         this.modelMapper = modelMapper;
         this.authService = authService;
+        this.timeUtils = timeUtils;
     }
 
     @Override
@@ -54,19 +56,6 @@ public class PostServiceImpl implements PostService {
         return posts.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    private String getTimeAgo(LocalDateTime createdAt) {
-        Duration duration = Duration.between(createdAt, LocalDateTime.now());
-
-        long seconds = duration.getSeconds();
-        if (seconds < 60) return "just now";
-        long minutes = seconds / 60;
-        if (minutes < 60) return minutes + " minute" + (minutes == 1 ? "" : "s") + " ago";
-        long hours = minutes / 60;
-        if (hours < 24) return hours + " hour" + (hours == 1 ? "":"s") + " ago";
-        long days = hours / 24;
-        return days + " day" + (days == 1 ? "":"s") + " ago";
-    }
-
     private PostWithAuthorNameDTO convertToDTO(Post post) {
         return new PostWithAuthorNameDTO(
                 post.getPostId(),
@@ -74,7 +63,7 @@ public class PostServiceImpl implements PostService {
                 post.getContent(),
                 post.getCreatedAt(),
                 post.getAuthor().getFirstName(),
-                getTimeAgo(post.getCreatedAt())
+                timeUtils.getTimeAgo(post.getCreatedAt())
         );
     }
 }
