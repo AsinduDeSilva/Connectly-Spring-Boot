@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,13 +54,27 @@ public class PostServiceImpl implements PostService {
         return posts.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    private String getTimeAgo(LocalDateTime createdAt) {
+        Duration duration = Duration.between(createdAt, LocalDateTime.now());
+
+        long seconds = duration.getSeconds();
+        if (seconds < 60) return "just now";
+        long minutes = seconds / 60;
+        if (minutes < 60) return minutes + " minute" + (minutes == 1 ? "" : "s") + " ago";
+        long hours = minutes / 60;
+        if (hours < 24) return hours + " hour" + (hours == 1 ? "":"s") + " ago";
+        long days = hours / 24;
+        return days + " day" + (days == 1 ? "":"s") + " ago";
+    }
+
     private PostWithAuthorNameDTO convertToDTO(Post post) {
         return new PostWithAuthorNameDTO(
                 post.getPostId(),
                 post.getTitle(),
                 post.getContent(),
                 post.getCreatedAt(),
-                post.getAuthor().getFirstName()
+                post.getAuthor().getFirstName(),
+                getTimeAgo(post.getCreatedAt())
         );
     }
 }
