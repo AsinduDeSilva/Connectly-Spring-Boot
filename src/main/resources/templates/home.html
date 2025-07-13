@@ -596,7 +596,7 @@
         <div class="logo">Connectly</div>
         <div class="header-actions">
             <button class="add-post-btn" id="addPostBtn">+ Add Post</button>
-            <form th:action="@{/perform_logout}" method="post">
+            <form id="logoutForm" th:action="@{/perform_logout}" method="post">
                 <button class="logout-btn" id="logoutBtn">Logout</button>
             </form>
 
@@ -749,6 +749,7 @@
         const closeBtn = document.getElementById('closeBtn');
         const cancelBtn = document.getElementById('cancelBtn');
         const postForm = document.getElementById('postForm');
+        const logoutForm = document.getElementById('logoutForm');
         const submitBtn = document.getElementById('submitBtn');
         const navTabs = document.querySelectorAll('.nav-tab');
         const contentSections = document.querySelectorAll('.content-section');
@@ -775,6 +776,10 @@
             });
         });
 
+        logoutForm.addEventListener('submit', function () {
+            localStorage.removeItem('activeTab');
+            localStorage.removeItem('userId');
+        });
 
         // Handle incoming friend request actions
         document.addEventListener('click', function(e) {
