@@ -59,7 +59,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     @Override
     public void acceptFriendRequest(Long requestId) {
         if(requestId == null) {
-            throw new IllegalArgumentException("Receiver IDs must not be null");
+            throw new IllegalArgumentException("Request IDs must not be null");
         }
 
         User receiver = authService.getLoggedUser();
@@ -88,30 +88,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     @Override
     public void declineFriendRequest(Long requestId) {
         if(requestId == null) {
-            throw new IllegalArgumentException("Receiver ID must not be null");
+            throw new IllegalArgumentException("Request ID must not be null");
         }
 
         FriendRequest friendRequest = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Friend request not found from " + requestId));
-
-        userRepository.findById(friendRequest.getSender().getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Receiver not found with ID: "
-                        + friendRequest.getSender().getUserId()));
-
-        friendRequestRepository.delete(friendRequest);
-    }
-
-    public void cancelFriendRequest (Long requestId){
-        if(requestId == null) {
-            throw new IllegalArgumentException("Receiver ID must not be null");
-        }
-
-        FriendRequest friendRequest = friendRequestRepository.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Friend request not found from " + requestId));
-
-        userRepository.findById(friendRequest.getReceiver().getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Receiver not found with ID: "
-                        + friendRequest.getReceiver().getUserId()));
 
         friendRequestRepository.delete(friendRequest);
     }

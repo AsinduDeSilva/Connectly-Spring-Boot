@@ -12,8 +12,6 @@ public interface FriendRequestService {
 
     void declineFriendRequest(Long requestId);
 
-    void cancelFriendRequest(Long receiverId);
-
     List<FriendRequestDTO> getReceivedRequests(Long userId);
 
     List<FriendRequestDTO> getSentRequests(Long userId);

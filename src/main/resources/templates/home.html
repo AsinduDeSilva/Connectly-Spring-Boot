@@ -753,29 +753,28 @@
         const navTabs = document.querySelectorAll('.nav-tab');
         const contentSections = document.querySelectorAll('.content-section');
 
-        // Navigation functionality
         navTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', function () {
                 const targetTab = this.getAttribute('data-tab');
 
-                // Update active tab
+                // Store tab in localStorage
+                localStorage.setItem('activeTab', targetTab);
+
+                // Switch active tab UI
                 navTabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
 
-                // Show corresponding content section
+                // Show matching section
                 contentSections.forEach(section => {
                     section.classList.remove('active');
                 });
                 document.getElementById(targetTab + '-section').classList.add('active');
 
-                // Hide add post button for non-feed sections
-                if (targetTab === 'feed') {
-                    addPostBtn.style.display = 'block';
-                } else {
-                    addPostBtn.style.display = 'none';
-                }
+                // Show/hide Add Post button
+                addPostBtn.style.display = targetTab === 'feed' ? 'block' : 'none';
             });
         });
+
 
         // Handle incoming friend request actions
         document.addEventListener('click', function(e) {
@@ -796,14 +795,17 @@
                     .then(response => response.json())
                     .then(json => {
                         if (json.success) {
-                            window.location.reload();
+                            showNotification(`You are now friends with ${name}!`);
+                            localStorage.setItem('activeTab', 'requests');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
                         } else {
                             alert(json.message);
                         }
                     })
 
                 requestCard.remove();
-                showNotification(`You are now friends with ${name}!`);
             }
 
             if (e.target.classList.contains('decline-btn')) {
@@ -822,14 +824,17 @@
                     .then(response => response.json())
                     .then(json => {
                         if (json.success) {
-                            window.location.reload();
+                            showNotification('Friend request declined');
+                            localStorage.setItem('activeTab', 'requests');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
                         } else {
                             alert(json.message);
                         }
                     })
 
                 requestCard.remove();
-                showNotification('Friend request declined');
             }
         });
 
@@ -852,14 +857,17 @@
                     .then(response => response.json())
                     .then(json => {
                         if (json.success) {
-                            window.location.reload();
+                            showNotification(`Friend request to ${name} cancelled`);
+                            localStorage.setItem('activeTab', 'requests');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
                         } else {
                             alert(json.message);
                         }
                     })
 
                 requestCard.remove();
-                showNotification(`Friend request to ${name} cancelled`);
 
                 // Update user card button back to "Send Request"
                 const userCards = document.querySelectorAll('.user-card');
@@ -1011,7 +1019,10 @@
                             e.target.className = 'friend-btn pending';
                             e.target.setAttribute('data-action', 'pending');
                             showNotification(`Friend request sent to ${userName}!`);
-
+                            localStorage.setItem('activeTab', 'users');
+                            setTimeout(() => {
+                                window.location.reload();
+                            },1500);
                         } else {
                             throw new Error(data.message || 'Failed to send request');
                         }
@@ -1026,6 +1037,16 @@
                     });
             }
         });
+
+        // Navigate to tab based on saved tab (localStorage)
+        const savedTab = localStorage.getItem('activeTab');
+        if (savedTab) {
+            const targetTab = document.querySelector(`.nav-tab[data-tab="${savedTab}"]`);
+            if (targetTab) {
+                targetTab.click(); // activate saved tab
+            }
+        }
+
     });
 </script>
 </body>
