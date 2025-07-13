@@ -8,10 +8,10 @@
 		<version>3.5.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>com.groupc</groupId>
+	<artifactId>connectly</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>connectly</name>
 	<description>Project for Spring Boot Social Media App</description>
 	<url/>
 	<licenses>
