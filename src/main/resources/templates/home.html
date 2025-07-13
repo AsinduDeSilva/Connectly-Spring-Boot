@@ -758,20 +758,16 @@
             tab.addEventListener('click', function () {
                 const targetTab = this.getAttribute('data-tab');
 
-                // Store tab in localStorage
                 localStorage.setItem('activeTab', targetTab);
 
-                // Switch active tab UI
                 navTabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
 
-                // Show matching section
                 contentSections.forEach(section => {
                     section.classList.remove('active');
                 });
                 document.getElementById(targetTab + '-section').classList.add('active');
 
-                // Show/hide Add Post button
                 addPostBtn.style.display = targetTab === 'feed' ? 'block' : 'none';
             });
         });
@@ -888,7 +884,6 @@
             }
         });
 
-        // Modal functions
         function openModal() {
             modalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -901,19 +896,16 @@
             postForm.reset();
         }
 
-        // Event listeners
         addPostBtn.addEventListener('click', openModal);
         closeBtn.addEventListener('click', closeModal);
         cancelBtn.addEventListener('click', closeModal);
 
-        // Close modal when clicking outside
         modalOverlay.addEventListener('click', function(e) {
             if (e.target === modalOverlay) {
                 closeModal();
             }
         });
 
-        // Close modal with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                 closeModal();
@@ -932,7 +924,6 @@
                 return;
             }
 
-            // Disable submit button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Posting...';
 
@@ -957,7 +948,7 @@
                 })
         });
 
-        // Simple notification system
+        // Notification
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.style.cssText = `
@@ -1036,19 +1027,18 @@
                         console.error('Error:', error);
                         showNotification(error.message || 'Failed to send friend request');
 
-                        // Reset button if failed
                         e.target.textContent = 'Send Request';
                         e.target.disabled = false;
                     });
             }
         });
 
-        // Navigate to tab based on saved tab (localStorage)
+        // Navigate to tabs when reloading
         const savedTab = localStorage.getItem('activeTab');
         if (savedTab) {
             const targetTab = document.querySelector(`.nav-tab[data-tab="${savedTab}"]`);
             if (targetTab) {
-                targetTab.click(); // activate saved tab
+                targetTab.click();
             }
         }
 
