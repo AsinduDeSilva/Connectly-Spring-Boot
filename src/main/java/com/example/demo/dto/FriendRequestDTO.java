@@ -1,7 +1,7 @@
 package com.example.demo.dto;
 
 
-import jakarta.validation.constraints.NotNull;
+import com.example.demo.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class FriendRequestDTO {
 
-    @NotNull
+    private Long id;
+
     private Long receiverId;
 
+    private User sender;
+
+    private User receiver;
+
+    private String timeAgo;
 }

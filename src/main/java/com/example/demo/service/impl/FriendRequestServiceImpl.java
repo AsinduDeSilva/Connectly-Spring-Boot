@@ -1,17 +1,21 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.FriendRequestDTO;
 import com.example.demo.model.FriendRequest;
 import com.example.demo.model.User;
 import com.example.demo.repository.FriendRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.FriendRequestService;
+import com.example.demo.util.TimeUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FriendRequestServiceImpl implements FriendRequestService {
@@ -19,11 +23,13 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     private final FriendRequestRepository friendRequestRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final TimeUtils timeUtils;
 
-    public FriendRequestServiceImpl(FriendRequestRepository friendRequestRepository, UserRepository userRepository, AuthService authService) {
+    public FriendRequestServiceImpl(FriendRequestRepository friendRequestRepository, UserRepository userRepository, AuthService authService, TimeUtils timeUtils) {
         this.friendRequestRepository = friendRequestRepository;
         this.userRepository = userRepository;
         this.authService = authService;
+        this.timeUtils = timeUtils;
     }
 
     @Override
@@ -51,48 +57,84 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    public void acceptFriendRequest(Long receiverId) {
-        if(receiverId == null) {
+    public void acceptFriendRequest(Long requestId) {
+        if(requestId == null) {
             throw new IllegalArgumentException("Receiver IDs must not be null");
         }
 
-        User loggedUser = authService.getLoggedUser();
+        User receiver = authService.getLoggedUser();
 
-        User receiver = userRepository.findById(receiverId)
-                .orElseThrow(() -> new IllegalArgumentException("Receiver not found with ID: " + receiverId));
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend request not found from " + requestId));
 
-        FriendRequest friendRequest = friendRequestRepository.findBySenderAndReceiver(loggedUser, receiver)
-                .orElseThrow(() -> new IllegalArgumentException("Friend request not found from " + loggedUser.getEmail() + " to " + receiver.getEmail()));
+        User sender = userRepository.findById(friendRequest.getSender().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver not found with ID: " + friendRequest.getSender().getUserId()));
 
-        Set<User> senderFriends = new HashSet<>(loggedUser.getFriends());
+        Set<User> senderFriends = new HashSet<>(sender.getFriends());
         Set<User> receiverFriends = new HashSet<>(receiver.getFriends());
 
         senderFriends.add(receiver);
-        receiverFriends.add(loggedUser);
+        receiverFriends.add(sender);
 
-        loggedUser.setFriends(senderFriends);
+        sender.setFriends(senderFriends);
         receiver.setFriends(receiverFriends);
 
-        userRepository.save(loggedUser);
+        userRepository.save(sender);
         userRepository.save(receiver);
 
         friendRequestRepository.delete(friendRequest);
     }
 
     @Override
-    public void declineFriendRequest(Long receiverId) {
-        if(receiverId == null) {
+    public void declineFriendRequest(Long requestId) {
+        if(requestId == null) {
             throw new IllegalArgumentException("Receiver ID must not be null");
         }
 
-        User loggedUser = authService.getLoggedUser();
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend request not found from " + requestId));
 
-        User receiver = userRepository.findById(receiverId)
-                .orElseThrow(() -> new IllegalArgumentException("Receiver not found with ID: " + receiverId));
-
-        FriendRequest friendRequest = friendRequestRepository.findBySenderAndReceiver(loggedUser, receiver)
-                .orElseThrow(() -> new IllegalArgumentException("Friend request not found from " + loggedUser.getEmail() + " to " + receiver.getEmail()));
+        userRepository.findById(friendRequest.getSender().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver not found with ID: "
+                        + friendRequest.getSender().getUserId()));
 
         friendRequestRepository.delete(friendRequest);
+    }
+
+    public void cancelFriendRequest (Long requestId){
+        if(requestId == null) {
+            throw new IllegalArgumentException("Receiver ID must not be null");
+        }
+
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend request not found from " + requestId));
+
+        userRepository.findById(friendRequest.getReceiver().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver not found with ID: "
+                        + friendRequest.getReceiver().getUserId()));
+
+        friendRequestRepository.delete(friendRequest);
+    }
+
+    public List<FriendRequestDTO> getReceivedRequests(Long userId) {
+        return friendRequestRepository.findFriendRequestsByReceiver_UserId(userId)
+                .stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<FriendRequestDTO> getSentRequests(Long userId) {
+        return friendRequestRepository.findFriendRequestsBySender_UserId(userId)
+                .stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private FriendRequestDTO convertToDTO(FriendRequest friendRequest) {
+        return new FriendRequestDTO(
+                friendRequest.getId(),
+                null,
+                friendRequest.getSender(),
+                friendRequest.getReceiver(),
+                timeUtils.getTimeAgo(friendRequest.getSentAt())
+        );
     }
 }
