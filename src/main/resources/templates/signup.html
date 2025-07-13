@@ -110,10 +110,6 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .input {
-            border-color: #ef4444;
-        }
-
         .error-message {
             font-size: 0.75rem;
             color: #ef4444;
@@ -253,7 +249,6 @@
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                     age--;
                 }
-
                 return age >= 13;
             }
 
@@ -261,7 +256,7 @@
                 const field = document.getElementById(fieldId);
                 const errorDiv = document.getElementById(fieldId + 'Error');
 
-                field.classList.add('error');
+                field.classList.add('error','input-error');
                 errorDiv.textContent = message;
                 errorDiv.style.display = 'block';
             }
@@ -270,13 +265,13 @@
                 const field = document.getElementById(fieldId);
                 const errorDiv = document.getElementById(fieldId + 'Error');
 
-                field.classList.remove('error');
+                field.classList.remove('error','input-error');
                 errorDiv.style.display = 'none';
             }
 
             function clearAllErrors() {
                 const fields = ['firstName', 'lastName', 'email', 'password', 'dateOfBirth'];
-                fields.forEach(clearError);
+                fields.forEach(field => clearError(field));
             }
 
             document.getElementById('firstName').addEventListener('blur', function() {
