@@ -11,7 +11,7 @@
 	<groupId>com.groupc</groupId>
 	<artifactId>connectly</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>connectly</name>
 	<description>Project for Spring Boot Social Media App</description>
 	<url/>
 	<licenses>
